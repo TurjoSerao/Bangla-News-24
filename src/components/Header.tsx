@@ -1,5 +1,6 @@
 import Image from "next/image";
 import NavLinks from "./NavLinks";
+import Link from "next/link";
 
 const Header = () => {
   const date = new Date().toLocaleDateString("bn-BD", {
@@ -22,9 +23,11 @@ const Header = () => {
           </div>
 
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-red-700 sm:text-2xl">
-              Bangla News 24
-            </h1>
+            <Link href={"/"}>
+              <h1 className="text-xl font-bold tracking-tight text-red-700 sm:text-2xl">
+                Bangla News 24
+              </h1>
+            </Link>
 
             <p className="mt-0.5 text-sm font-medium text-gray-500">{date}</p>
           </div>
