@@ -1,6 +1,5 @@
 import MostReads from "@/components/MostReads";
 import Newscard from "@/components/Newscard";
-import React from "react";
 
 const CategoryNews = async ({
   params,
