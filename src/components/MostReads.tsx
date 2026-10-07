@@ -31,9 +31,7 @@ const MostReads = async () => {
         {mostReadsNews.slice(0, 6).map((news, index) => (
           <Link
             key={news.id}
-            href={news.link}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`/news/${news.id}`}
             className="group flex gap-4 p-4 transition-colors duration-200 hover:bg-red-50"
           >
             {/* Number */}

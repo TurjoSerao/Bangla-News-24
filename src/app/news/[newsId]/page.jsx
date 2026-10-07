@@ -13,8 +13,40 @@ const NewsDetails = async ({ params }) => {
     },
   );
 
+  if (res.status === 415) {
+    const errorData = await res.json();
+
+    if (errorData.error?.code === "UNSUPPORTED_CONTENT") {
+      const message = errorData.error.message;
+      const originalUrl = message?.match(/https:\/\/\S+/)?.[0];
+
+      return (
+        <main className="mx-auto min-h-screen max-w-3xl px-4 py-12">
+          <h1 className="text-2xl font-bold text-gray-900">
+            এই সংবাদটির বিস্তারিত এখানে পাওয়া যাচ্ছে না
+          </h1>
+          <p className="mt-3 text-gray-600">
+            {originalUrl
+              ? "এটি একটি লাইভ সংবাদ। সম্পূর্ণ সংবাদটি মূল উৎসে পড়ুন।"
+              : message || "এই সংবাদটির কোনো নিবন্ধের বিবরণ পাওয়া যায়নি।"}
+          </p>
+          {originalUrl && (
+            <a
+              href={originalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 inline-block font-medium text-red-700 hover:underline"
+            >
+              মূল সংবাদ দেখুন →
+            </a>
+          )}
+        </main>
+      );
+    }
+  }
+
   if (!res.ok) {
-    throw new Error("Failed to fetch news article");
+    throw new Error(`Failed to fetch news article (${res.status})`);
   }
 
   const data = await res.json();
@@ -76,11 +108,15 @@ const NewsDetails = async ({ params }) => {
             </div>
 
             {/* Hero Image */}
-            {news.imageUrl && (
+            {(news.imageUrl ||
+              news.body?.find((block) => block.type === "image")?.url) && (
               <figure className="mt-6">
                 <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-100">
                   <Image
-                    src={news.imageUrl}
+                    src={
+                      news.imageUrl ||
+                      news.body.find((block) => block.type === "image").url
+                    }
                     alt={news.title}
                     fill
                     priority
@@ -89,16 +125,17 @@ const NewsDetails = async ({ params }) => {
                   />
                 </div>
 
-                {news.body?.[0]?.type === "image" && news.body[0].caption && (
+                {news.body?.find((block) => block.type === "image")
+                  ?.caption && (
                   <figcaption className="mt-2 text-sm leading-6 text-gray-500">
-                    {news.body[0].caption}
+                    {news.body.find((block) => block.type === "image").caption}
                   </figcaption>
                 )}
               </figure>
             )}
 
             {/* Article Body */}
-            {/* Article Body */}
+
             <div className="mt-8">
               {news.body?.slice(1).map((block, index) => {
                 if (block.type === "text") {
