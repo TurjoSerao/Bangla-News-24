@@ -35,13 +35,17 @@ const Header = () => {
 
         {/* Authentication */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <button className="rounded-md border border-red-700 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition duration-200 hover:bg-red-50">
-            সাইন ইন
-          </button>
+          <Link href="/sign-in">
+            <button className="rounded-md border border-red-700 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition duration-200 hover:bg-red-50">
+              সাইন ইন
+            </button>
+          </Link>
 
-          <button className="rounded-md bg-red-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-red-800 hover:shadow-md">
-            সাইন আপ
-          </button>
+          <Link href="/sign-up">
+            <button className="rounded-md bg-red-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-red-800 hover:shadow-md">
+              সাইন আপ
+            </button>
+          </Link>
         </div>
       </div>
       <NavLinks />
