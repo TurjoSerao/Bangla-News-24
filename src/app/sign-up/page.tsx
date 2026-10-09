@@ -38,6 +38,18 @@ const SignUpPage = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+    });
+  };
+
+  const handleGithubSignIn = async () => {
+    const data = await authClient.signIn.social({
+      provider: "github",
+    });
+  };
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-base-200 px-4 py-10">
       <div className="w-full max-w-md rounded-2xl border border-base-300 bg-base-100 p-6 shadow-xl sm:p-8">
@@ -109,6 +121,14 @@ const SignUpPage = () => {
             Create Account
           </button>
         </form>
+        <div className="flex justify-between gap-4 my-5">
+          <button onClick={handleGoogleSignIn} className="btn ">
+            🌐 Google
+          </button>
+          <button onClick={handleGithubSignIn} className="btn ">
+            🤖 Github
+          </button>
+        </div>
 
         {/* Login Link */}
         <p className="mt-6 text-center text-sm text-base-content/70">

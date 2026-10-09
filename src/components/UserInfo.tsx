@@ -37,20 +37,20 @@ const UserInfo = () => {
         <div className="flex items-center gap-3">
           <h2 className="text-xs font-bold">{user.name}</h2>
 
-          <div className="h-9 w-9 overflow-hidden rounded-full ring-2 ring-primary ring-offset-2 ring-offset-base-100">
-            <Image
-              src={
-                isValidImageUrl && !imageError
-                  ? imageUrl!
-                  : "/default-avatar.png"
-              }
-              alt={`${user.name}'s avatar`}
-              width={36}
-              height={36}
-              className="h-full w-full object-cover"
-              onError={() => setImageError(true)}
-            />
-          </div>
+          <Link href="/profile">
+            <div className="h-9 w-9 overflow-hidden rounded-full ring-2 ring-primary ring-offset-2 ring-offset-base-100">
+              <Image
+                src={
+                  isValidImageUrl && !imageError ? imageUrl! : "/avater.jfif"
+                }
+                alt={`${user.name}'s avatar`}
+                width={36}
+                height={36}
+                className="h-full w-full object-cover"
+                onError={() => setImageError(true)}
+              />
+            </div>
+          </Link>
 
           <button
             onClick={handleSignOut}
