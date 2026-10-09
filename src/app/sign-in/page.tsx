@@ -1,6 +1,33 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 const SignInPage = () => {
+  const onSubmit = async (e: React.SubmitEvent<HTMLElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const user = Object.fromEntries(formData.entries()) as {
+      email: string;
+      password: string;
+    };
+    console.log(user);
+    const { data, error } = await authClient.signIn.email({
+      ...user,
+      callbackURL: "/",
+    });
+    if (data) {
+      toast.success("Sign In successful");
+      console.log(data);
+    }
+    if (error) {
+      toast.error(error.message);
+      console.log(error);
+    }
+  };
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-base-200 px-4 py-10">
       <div className="w-full max-w-md rounded-2xl border border-base-300 bg-base-100 p-6 shadow-xl sm:p-8">
@@ -12,7 +39,7 @@ const SignInPage = () => {
           </p>
         </div>
         {/* Sign In Form */}
-        <form className="flex flex-col gap-4">
+        <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <fieldset className="fieldset">
             <legend className="fieldset-legend text-sm font-semibold">
               Email address
