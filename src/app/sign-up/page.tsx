@@ -2,13 +2,16 @@
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -27,27 +30,57 @@ const SignUpPage = () => {
       callbackURL: "/",
     };
 
-    const { data, error } = await authClient.signUp.email(payload);
-    if (data) {
-      console.log(data);
-      router.push("/");
-      return;
-    }
-    if (error) {
-      console.error(error);
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await authClient.signUp.email(payload);
+
+      if (error) {
+        toast.error(error.message || "Unable to create your account.");
+        return;
+      }
+
+      if (data) {
+        toast.success("Account created successfully!");
+        router.push("/");
+        return;
+      }
+
+      toast.error("Unable to create your account. Please try again.");
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
-    const data = await authClient.signIn.social({
-      provider: "google",
-    });
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        toast.error(error.message || "Google sign-up failed.");
+      }
+    } catch {
+      toast.error("Unable to sign up with Google.");
+    }
   };
 
   const handleGithubSignIn = async () => {
-    const data = await authClient.signIn.social({
-      provider: "github",
-    });
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: "github",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        toast.error(error.message || "GitHub sign-up failed.");
+      }
+    } catch {
+      toast.error("Unable to sign up with GitHub.");
+    }
   };
 
   return (
@@ -74,6 +107,7 @@ const SignUpPage = () => {
               name="name"
               className="input input-bordered w-full"
               placeholder="Your name"
+              autoComplete="name"
               required
             />
           </fieldset>
@@ -97,6 +131,7 @@ const SignUpPage = () => {
               name="email"
               className="input input-bordered w-full"
               placeholder="you@example.com"
+              autoComplete="email"
               required
             />
           </fieldset>
@@ -110,6 +145,8 @@ const SignUpPage = () => {
               name="password"
               className="input input-bordered w-full"
               placeholder="Enter your password"
+              autoComplete="new-password"
+              minLength={8}
               required
             />
             <p className="mt-1 text-xs text-base-content/50">
@@ -117,15 +154,19 @@ const SignUpPage = () => {
             </p>
           </fieldset>
 
-          <button type="submit" className="btn btn-neutral mt-3 w-full">
-            Create Account
+          <button
+            type="submit"
+            className="btn btn-neutral mt-3 w-full"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Creating account..." : "Create Account"}
           </button>
         </form>
         <div className="flex justify-between gap-4 my-5">
-          <button onClick={handleGoogleSignIn} className="btn ">
+          <button type="button" onClick={handleGoogleSignIn} className="btn">
             🌐 Google
           </button>
-          <button onClick={handleGithubSignIn} className="btn ">
+          <button type="button" onClick={handleGithubSignIn} className="btn">
             🤖 Github
           </button>
         </div>
